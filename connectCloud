@@ -1,0 +1,88 @@
+Steps to configure DB on Google cloud:
+- Create Instance:
+	1. products and services -> SQL -> create instance.
+	2. select MySQL and choose Second Gen
+	3. instance ID - mccfinalproject150727; root user pswd: YSabhi_1993!
+	4. create
+- viewing instances on instance page
+- editing, cloning instances
+- starting, stopping, restarting, deleting instances
+- configuring IP Connectivity
+	Access control -> Add network -> (Network field - enter IP address) -> Done -> Save 
+
+- Connecting to Instances:	
+	- sudo apt-get install mysql-server -- install mysql server(To test locally)
+	- To test on dev server
+		- wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -- download this proxy 
+		- mv cloud_sql_proxy.linux.amd64 cloud_sql_proxy
+		- chmod +x cloud_sql_proxy
+	- Install python -mysqldb
+		- sudo apt-get install python-mysqldb
+- Setting up cloud SQL:
+	- gcloud sql instances describe [INSTANCE_ID] -- use this to get the connection name
+	- connection name = bookshelf-164902:us-east1:mccfinalproject150727
+- Granting access to app engine
+	- The default App Engine service account is named [PROJECT-ID]@appspot.gserviceaccount.com.
+	- the service account should be set to editor. Otherwise add the service account or change the role to editor.
+	- go to this location and change app.yaml file:
+		/home/abhishek/Documents/F/Mobile_cloud_computing/python-docs-samples/appengine/standard/cloudsql
+
+- Application default credentials work:
+	- go to API Manager
+	- create credentials for the project
+	- create service account key
+	- select JSON file and create
+- Connecting to the instance using fuse:
+	./cloud_sql_proxy -dir=/cloudsql -fuse  -credential_file=[PATH_TO_KEY_FILE] & mysql -u [USER_NAME] -S /cloudsql/[INSTANCE_CONNECTION_NAME]
+
+CONNECT TO DB:
+- gcloud beta sql connect mccfinalproject150727 --user=root //to connect to the mysql server
+
+CONNECT TO VM: Python code can be run here.
+- gcloud compute ssh mccfinal-python-run //connect to google VM instance
+
+LIST OF STEPS TO BE EXECUTED ON VM TO INSTALL GCLOUD COMPONENTS:
+sudo apt-get update
+sudo apt-get remove google-cloud-sdk
+curl https://sdk.cloud.google.com | bash
+exec -l $SHELL
+gcloud init
+gcloud components list
+gcloud components install kubectl
+gcloud components list
+
+serviceAccountEmailAddress: cnouilipvrdyhen2jedk2w6pxm@speckle-umbrella-8.iam.gserviceaccount.com
+Copy to bucket from local machine - gsutil cp /home/abhishek/writepet.csv gs://bookshelf-164902.appspot.com/writepet.csv 
+Copy from bucket to local machine - gsutil cp gs://bookshelf-164902.appspot.com/pet.csv /home/abhishek
+Copy an entire directory to the bucket - gsutil cp -r dir gs://my-bucket
+Transfer done using multithreading - gsutil -m cp -r dir gs://my-bucket 
+
+Export from database
+gcloud beta sql instances export mccfinal-python-run gs://bookshelf-164902.appspot.com/sqldumpfile.gz --database MCCFinalProject
+
+install firebase python package
+-- install pip	
+	1. sudo apt-get install python-pip python-dev build-essential
+	2. sudo pip install --upgrade pip
+	3. sudo pip install --upgrade virtualenv
+
+-- install firebase
+	1. sudo pip install requests
+	2. sudo pip install python-firebase
+
+Using npm:
+	https://docs.npmjs.com/getting-started/what-is-npm
+--	installing npm
+	1. sudo apt-get install python-software-properties
+	2. curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
+	3. sudo apt-get install nodejs
+
+-- to get data from firebase into VM
+	1. npm install firebase-import
+	2. export PATH=$PATH:`npm bin`
+
+
+
+
+
+
